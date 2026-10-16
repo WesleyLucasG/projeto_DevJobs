@@ -6,6 +6,12 @@ const vagasMock = [
 ];
 
 router.get('/', (req, res) => {
+    const vagas = db.prepare(
+        SELECT vagasMock.*. e, nome As empresa_nome
+        from vagas v
+        JOIN empresas e ON e.id = v.empresa.id
+        ORDER By v.crea
+    )
     res.json(vagasMock);
 });
 
