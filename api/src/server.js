@@ -1,8 +1,11 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
 require('./database/db');
 
 app.use(cors());
@@ -17,7 +20,12 @@ app.get('/api/health', (req, res) => {
 });
 
 const vagasRoutes = require('./routes/vagas.routes');
+const authRoutes = require('./routes/auth.routes');
+const cepRoutes = require('./routes/cep.routes');
+
 app.use('/api/vagas', vagasRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/cep', cepRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);
@@ -27,4 +35,3 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`DevJobs API rodando em http://localhost:${PORT}`);
 });
-
