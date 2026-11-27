@@ -16,6 +16,7 @@ router.get('/', (req, res) => {
   res.json(vagas);
 });
 
+<<<<<<< HEAD
 // Cadastrar vaga — exige autenticação
 router.post('/', auth, (req, res) => {
   const {
@@ -35,6 +36,18 @@ router.post('/', auth, (req, res) => {
     return res.status(400).json({
       erro: 'Campos obrigatórios: titulo, tipo'
     });
+=======
+router.post('/', auth, (req, res) => {
+  // 1. Pega o ID da empresa logada direto do token JWT
+  const empresa_id = req.empresa.id; 
+  
+  // 2. Não extrai mais o empresa_id do body
+  const { titulo, tipo, tecnologias, salario, cep, cidade, estado, descricao } = req.body;
+
+  // 3. Valida apenas os campos do body
+  if (!titulo || !tipo) {
+    return res.status(400).json({ erro: 'Campos obrigatórios: titulo, tipo' });
+>>>>>>> upstream/main
   }
 
   const result = db.prepare(`
@@ -62,7 +75,11 @@ router.post('/', auth, (req, res) => {
   res.status(201).json(vaga);
 });
 
+<<<<<<< HEAD
 // Buscar vaga por ID
+=======
+
+>>>>>>> upstream/main
 router.get('/:id', (req, res) => {
   const vaga = db.prepare(`
     SELECT v.*, e.nome AS empresa_nome
@@ -128,6 +145,7 @@ router.put('/:id', (req, res) => {
   res.json(atualizada);
 });
 
+<<<<<<< HEAD
 // Excluir vaga — exige autenticação
 router.delete('/:id', auth, (req, res) => {
   const { id } = req.params;
@@ -140,6 +158,17 @@ router.delete('/:id', auth, (req, res) => {
     return res.status(404).json({
       erro: 'Vaga não encontrada'
     });
+=======
+router.delete('/:id', auth, (req, res) => {
+  const { id } = req.params;
+  const empresa_id = req.empresa.id; // ID da empresa logada
+
+  // Verifica tanto o ID da vaga quanto o ID da empresa dona da vaga
+  const result = db.prepare('DELETE FROM vagas WHERE id = ? AND empresa_id = ?').run(id, empresa_id);
+
+  if (result.changes === 0) {
+    return res.status(404).json({ erro: 'Vaga não encontrada ou você não tem permissão para excluí-la' });
+>>>>>>> upstream/main
   }
 
   res.status(204).send();

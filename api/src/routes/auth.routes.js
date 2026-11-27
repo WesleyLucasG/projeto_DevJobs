@@ -7,6 +7,7 @@ const router = Router();
 
 router.post('/login', (req, res) => {
   const { email, senha } = req.body;
+<<<<<<< HEAD
 
   if (!email || !senha) {
     return res.status(400).json({ erro: 'Informe email e senha' });
@@ -26,10 +27,21 @@ router.post('/login', (req, res) => {
       nome: empresa.nome,
       email: empresa.email
     },
+=======
+  const empresa = db.prepare('SELECT * FROM empresas WHERE email = ?').get(email);
+
+  if (!empresa || !bcrypt.compareSync(senha, empresa.senha_hash)) {
+    return res.status(401).json({ erro: 'Email ou senha inválidos' });
+  }
+
+  const token = jwt.sign(
+    { id: empresa.id, nome: empresa.nome, email: empresa.email },
+>>>>>>> upstream/main
     process.env.JWT_SECRET,
     { expiresIn: '8h' }
   );
 
+<<<<<<< HEAD
   res.json({
     token,
     empresa: {
@@ -41,3 +53,9 @@ router.post('/login', (req, res) => {
 });
 
 module.exports = router;
+=======
+  res.json({ token, empresa: { id: empresa.id, nome: empresa.nome, email: empresa.email } });
+});
+
+module.exports = router;
+>>>>>>> upstream/main
